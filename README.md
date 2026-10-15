@@ -40,6 +40,15 @@ Nothing a student types leaves their browser.
 - **Backup:** a JSON file the student downloads and can restore later.
 - "Erase everything" clears it all.
 
+## Security
+
+- **No third-party code.** The page loads no external scripts, fonts, trackers or libraries, so there is no supply chain to compromise.
+- **Locked-down browser policy.** A Content Security Policy blocks every network request (`connect-src 'none'`), external resources, form submissions and `<base>` hijacking. Even if something malicious got onto the page, it could not send a student's answers anywhere.
+- **Untrusted input is cleaned.** Everything loaded from a transfer link, a backup file or browser storage is reduced to plain text of a known shape, and everything shown on screen is HTML-escaped.
+- **Repo:** only OnDigitalMarketing members with write access can change `main`. Anyone can view, clone or fork, and outside suggestions arrive as pull requests that change nothing until a maintainer merges them. There are no GitHub Actions workflows.
+
+Found a problem? Open an issue or email the maintainer.
+
 ## Sources cited in the steps
 
 Brynjolfsson, Li and Raymond, *QJE* (2025); Dell'Acqua and colleagues (2023); Kahneman and Tversky (1979); Arkes and Blumer (1985); Girard, *Deceit, Desire and the Novel* (1961); Gilovich, Medvec and Savitsky, *JPSP* (2000); Fischhoff, *Journal of Experimental Psychology* (1975); Feynman, Caltech commencement (1974) and *Surely You're Joking, Mr. Feynman!* (1985); Wooden and Jamison, *Wooden* (1997); Sharma and colleagues, *Towards Understanding Sycophancy in Language Models* (2023); Waldinger and Schulz, *The Good Life* (2023); Holt-Lunstad, Smith and Layton, *PLOS Medicine* (2010); Sio and Ormerod, *Psychological Bulletin* (2009); Csikszentmihalyi, *Flow* (1990); O'Keefe, Dweck and Walton, *Psychological Science* (2018); Simonton, *Psychological Review* (1997); Samuel Johnson, *The Vision of Theodore* (1748); Theodore Roosevelt, the Sorbonne (1910).
