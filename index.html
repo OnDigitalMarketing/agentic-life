@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Run the Loop</title>
+<meta name="description" content="A step-by-step guide to running your own learning loop in the agentic age. Everything you type stays in your browser.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="Run the Loop">
+<meta property="og:description" content="Pick a milestone, know your bugs, build your coach, and ship. Then let it compound.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23FFC64D'/%3E%3Cpath d='M7 22c3 1 4-2 6-2s3 1 5-1 3-6 6-9' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M20 9h5v5' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#000; --panel:#1c1c1c; --panel-2:#262626; --line:#333;
+  --text:#fff; --muted:#a3a3a3; --dim:#6b6b6b;
+  --green:#3DD68C; --green-ink:#04170d; --gold:#FFC64D; --gold-ink:#1d1400; --red:#F26B6B;
+  --radius:4px; --gutter:16px;
+  --font: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:flex;flex-direction:column;line-height:1.45;font-size:17px}
+a{color:var(--green)}
+button,input,textarea,select{font:inherit;color:inherit}
+.wrap{width:100%;max-width:760px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+header.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:10;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);border-bottom:1px solid #151515}
+header.top .wrap{display:flex;align-items:center;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px;cursor:pointer;background:none;border:0;padding:0}
+.brand .dot{width:26px;height:26px;border-radius:50%;background:var(--gold);display:grid;place-items:center}
+.tabs{margin-left:auto;display:flex;gap:4px}
+.tab{background:none;border:0;color:var(--muted);padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:600}
+.tab[aria-current="true"]{color:var(--text);background:var(--panel)}
+main{flex:1;padding:28px 0 64px}
+.kicker{color:var(--green);font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;margin:0 0 14px}
+.kicker.gold{color:var(--gold)}
+h1{font-size:clamp(40px,10vw,72px);line-height:1.02;font-weight:400;margin:0 0 18px;letter-spacing:-.5px}
+h2{font-size:clamp(32px,7vw,48px);line-height:1.05;font-weight:400;margin:0 0 14px;letter-spacing:-.3px}
+h3{font-size:20px;font-weight:600;margin:0 0 6px}
+.g{color:var(--green)} .y{color:var(--gold)} .r{color:var(--red)}
+.lede{font-size:19px;color:#e6e6e6;margin:0 0 26px;max-width:620px}
+.muted{color:var(--muted)} .small{font-size:14px} .tiny{font-size:12px;color:var(--dim)}
+.eq{font-family:var(--serif);font-size:clamp(44px,12vw,84px);line-height:1;margin:6px 0 26px;white-space:nowrap}
+.eq sup{color:var(--gold);font-size:.55em;vertical-align:.9em;margin-left:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:var(--radius);padding:14px 18px;font-weight:700;cursor:pointer;text-decoration:none;font-size:16px;min-height:48px}
+.btn.primary{background:var(--green);color:var(--green-ink)}
+.btn.gold{background:var(--gold);color:var(--gold-ink)}
+.btn.ghost{background:var(--panel);color:var(--text)}
+.card .btn.ghost{background:#303030}
+.btn.line{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.sm{padding:9px 12px;min-height:38px;font-size:14px}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.paths{display:grid;gap:12px;margin:8px 0 28px}
+.path{display:block;text-align:left;background:var(--panel);border:0;border-radius:var(--radius);padding:18px 18px 16px;cursor:pointer;border-left:4px solid var(--green);color:var(--text)}
+.path.gold{border-left-color:var(--gold)}
+.path .t{font-size:20px;font-weight:600;margin-bottom:4px}
+.path .d{color:var(--muted);font-size:15px}
+.path:hover,.path:focus-visible{background:var(--panel-2)}
+.note{border-left:4px solid var(--gold);padding:4px 0 4px 16px;margin:24px 0;color:#e6e6e6}
+.card{background:var(--panel);border-radius:var(--radius);padding:18px;margin:0 0 14px}
+.card.gold{box-shadow:inset 0 3px 0 var(--gold)}
+.card.green{box-shadow:inset 0 3px 0 var(--green)}
+
+/* progress */
+.progress{display:flex;gap:6px;align-items:center;margin:0 0 26px;overflow-x:auto;padding-bottom:4px}
+.pdot{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--panel);display:grid;place-items:center;border:0;cursor:pointer;color:var(--muted)}
+.pdot svg{width:15px;height:15px}
+.pdot.done{background:#123d28;color:var(--green)}
+.pdot.on{background:var(--green);color:#000}
+.pdot.on.goldd{background:var(--gold)}
+.pbar{flex:1 1 4px;min-width:3px;height:2px;background:#222}
+
+/* step head */
+.stephead{display:flex;gap:16px;align-items:center;margin-bottom:12px}
+.badge{flex:0 0 auto;width:64px;height:64px;border-radius:50%;background:var(--green);display:grid;place-items:center;color:#000}
+.badge.goldb{background:var(--gold)}
+.badge svg{width:32px;height:32px}
+.stephead h2{margin:0}
+
+/* fields */
+.field{margin:0 0 22px}
+.field label.l{display:block;font-weight:600;font-size:17px;margin-bottom:4px}
+.field .hint{color:var(--muted);font-size:14px;margin:0 0 8px}
+input[type=text],input[type=date],textarea,select{width:100%;background:#0f0f0f;border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;font-size:16px;outline:none}
+textarea{min-height:96px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(61,214,140,.18)}
+::placeholder{color:#5c5c5c}
+.cantcan{display:grid;gap:10px}
+.cantcan .from{display:flex;align-items:center;background:var(--panel);border-radius:var(--radius);padding:0 0 0 14px}
+.cantcan .to{display:flex;align-items:center;border:1.5px dashed var(--gold);border-radius:var(--radius);padding:0 0 0 14px}
+.cantcan span{white-space:nowrap;font-size:18px;color:var(--muted)}
+.cantcan .to span{color:var(--gold);font-weight:700}
+.cantcan input{border:0;background:transparent;box-shadow:none!important;font-size:18px}
+.cantcan .to input{color:var(--gold);font-weight:600}
+.arrow{color:#555;text-align:center;font-size:20px;line-height:1}
+.checks{display:grid;gap:8px}
+.check{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border-radius:var(--radius);padding:14px;cursor:pointer;border:1px solid transparent}
+.check input{margin-top:3px;width:20px;height:20px;accent-color:var(--green);flex:0 0 auto}
+.check .ct{font-size:12px;font-weight:700;letter-spacing:1.2px;color:var(--green);text-transform:uppercase}
+.check .cd{font-size:16px}
+.check:has(input:checked){border-color:var(--green);background:#0f2219}
+.heroes{display:grid;gap:8px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.template{display:grid;gap:8px;margin:0 0 24px}
+.trow{background:var(--panel);border-left:4px solid var(--gold);border-radius:var(--radius);padding:10px 14px}
+.trow b{display:block;font-weight:500;font-size:17px}
+.trow span{color:var(--muted);font-size:14px}
+.trow.hl{background:var(--gold);color:var(--gold-ink)}
+.trow.hl span{color:#3d2c00}
+.tip{background:#0d0d0d;border:1px solid #222;border-radius:var(--radius);padding:14px 16px;margin:0 0 24px;font-size:15px;color:#d4d4d4}
+.tip b{color:var(--gold)}
+.source{font-size:12px;color:var(--dim);margin-top:26px;border-top:1px solid #1a1a1a;padding-top:12px}
+.nav{display:flex;gap:10px;justify-content:space-between;margin-top:30px}
+.nav .btn{flex:1}
+.nav .btn.back{flex:0 0 auto}
+
+/* chart */
+.chart{background:var(--panel);border-radius:var(--radius);padding:16px;margin:0 0 24px}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:grid;gap:4px;margin-top:10px;font-size:14px}
+.legend b{font-size:20px;margin-right:6px}
+
+/* outputs */
+pre.prompt{white-space:pre-wrap;word-wrap:break-word;background:#0b0b0b;border:1px solid #242424;border-radius:var(--radius);padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.5;max-height:340px;overflow:auto;margin:12px 0}
+.steps3{display:grid;gap:8px;margin:12px 0}
+.s3{display:flex;gap:12px;background:#111;border-radius:var(--radius);padding:12px 14px}
+.s3 .n{color:var(--gold);font-weight:700;font-size:18px}
+.s3 b{display:block}
+.s3 span{color:var(--muted);font-size:14px}
+
+/* loops */
+.ncount{display:flex;align-items:baseline;gap:12px;margin:0 0 20px}
+.ncount .big{white-space:nowrap;font-family:var(--serif);font-size:56px;line-height:1;color:var(--gold)}
+.loop{background:var(--panel);border-radius:var(--radius);padding:16px;margin:0 0 12px}
+.loop.closed{opacity:.85;box-shadow:inset 3px 0 0 var(--green)}
+.loop.open{box-shadow:inset 3px 0 0 var(--gold)}
+.loop .lab{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--green);margin-top:10px}
+.loop .lab:first-child{margin-top:0}
+.loopgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 20px}
+.lq{background:var(--panel);border-radius:var(--radius);padding:12px}
+.lq .n{color:var(--green);font-size:13px;font-weight:700}
+.lq .w{font-size:22px}
+.lq.hl{background:var(--green);color:#000}
+.lq.hl .n{color:#000}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--green);color:#000;font-weight:700;padding:12px 18px;border-radius:var(--radius);opacity:0;transition:.2s;pointer-events:none;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{border-top:1px solid #151515;padding:18px 0 28px;color:var(--dim);font-size:13px}
+footer .wrap{display:flex;gap:8px 16px;flex-wrap:wrap;justify-content:space-between}
+.curve{display:block;width:100%;height:auto;margin:6px 0 20px}
+.hide{display:none!important}
+@media (min-width:640px){
+  .cantcan{grid-template-columns:1fr auto 1fr;align-items:center}
+  .paths{grid-template-columns:1fr 1fr}
+  .paths .path.wide{grid-column:1 / -1}
+}
+@media (max-width:420px){
+  .hero{grid-template-columns:1fr}
+  .hero input:last-child{margin-top:-2px}
+  .tab{padding:8px 7px;font-size:13px}
+  .brand span.name{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <button class="brand" id="homeBtn" aria-label="Run the Loop home">
+      <span class="dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18c3 1 4-2 6-2s3 1 5-1 3-6 6-9"/><path d="M15 6h5v5"/></svg></span>
+      <span class="name">Run the Loop</span>
+    </button>
+    <nav class="tabs" aria-label="Sections">
+      <button class="tab" data-view="setup">Set up</button>
+      <button class="tab" data-view="loops">Loops</button>
+      <button class="tab" data-view="kit">Your agent</button>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap" id="app"></div></main>
+
+<footer>
+  <div class="wrap">
+    <span>Jake Cook, Harvard Business School</span>
+    <span>Everything you type stays in this browser. No accounts, no server.</span>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- icons ---------- */
+const I = {
+  flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22V4"/><path d="M5 4c3-2 6 2 9 0s4-1 5 0v10c-1-1-2-2-5 0s-6-2-9 0"/></svg>',
+  bug:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v9M9 4l1.5 2.5M15 4l-1.5 2.5M3 13h4M17 13h4M4 8l3 2M20 8l-3 2M4 19l3-2M20 19l-3-2"/></svg>',
+  pen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-6"/><path d="M2 8h4M2 12h4M2 16h4"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L13 14l-4 1 1-4z"/></svg>',
+  coach:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="18" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 11h6M9 16h6"/><circle cx="7.6" cy="11" r=".3"/></svg>',
+  people:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1"/><path d="M16 4a4 4 0 0 1 0 8M22 21v-1a6 6 0 0 0-4-5.7"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.3 5H6.7a4 4 0 0 0-4 3.6L2 15a3 3 0 0 0 5.2 2.1L9 15h6l1.8 2.1A3 3 0 0 0 22 15l-.7-6.4A4 4 0 0 0 17.3 5z"/></svg>',
+  rocket:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-4A13 13 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/></svg>',
+  trend:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19c3 1 4-2 6-2s3 1 5-1 3-6 6-9"/><path d="M15 6h5v5"/></svg>',
+  brain:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-6 .1 4 4 0 0 0-2.5 5.8A4 4 0 0 0 6 18a4 4 0 0 0 6 1.5z"/><path d="M12 5a3 3 0 1 1 6 .1 4 4 0 0 1 2.5 5.8A4 4 0 0 1 18 18a4 4 0 0 1-6 1.5"/><path d="M12 5v14.5"/></svg>'
+};
+
+/* ---------- storage (browser only) ---------- */
+const KEY = "runtheloop.v1";
+function blank(){ return { a:{}, loops:[], step:0, mode:"full", started:false }; }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && s.a) return Object.assign(blank(), s); }catch(e){} return blank(); }
+let S = load();
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- helpers ---------- */
+const $app = document.getElementById("app");
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const val = k => (S.a[k]==null ? "" : S.a[k]);
+const has = k => { const v = S.a[k]; return Array.isArray(v) ? v.length>0 : String(v||"").trim().length>0; };
+function addDays(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function fmtDate(iso){ if(!iso) return ""; const d=new Date(iso+"T12:00:00"); if(isNaN(d)) return iso; return d.toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"}); }
+function daysUntil(iso){ if(!iso) return null; const d=new Date(iso+"T12:00:00"); return Math.round((d-new Date())/86400000); }
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),1800); }
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); toast("Copied"); }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy"); toast("Copied");}catch(_){toast("Select and copy manually");} ta.remove(); }
+}
+function confirmTap(btn, label, fn){
+  btn.onclick = ()=>{
+    if(btn.dataset.armed){ clearTimeout(btn._t); fn(); return; }
+    const orig = btn.textContent; btn.dataset.armed="1"; btn.textContent = label;
+    btn._t = setTimeout(()=>{ delete btn.dataset.armed; btn.textContent = orig; }, 3000);
+  };
+}
+function b64e(obj){ return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function b64d(str){ str=str.replace(/-/g,"+").replace(/_/g,"/"); while(str.length%4) str+="="; return JSON.parse(decodeURIComponent(escape(atob(str)))); }
+
+/* ---------- content: the eight steps ---------- */
+const BUGS = [
+  {v:"Loss aversion", d:"Losses feel about twice as big as gains."},
+  {v:"Sunk cost", d:"We stay because of what we've spent."},
+  {v:"Mimetic desire", d:"We chase what the people around us want."},
+  {v:"Fear of embarrassment", d:"We think everyone is watching us stumble."}
+];
+const GUARDS = [
+  {v:"Burnout", d:"Running so hot the loops stop."},
+  {v:"A ruinous bet", d:"One wager big enough to take you out of the game."},
+  {v:"Toxic or boring work", d:"Work that drains the enthusiasm that keeps loops running."},
+  {v:"A fried reputation", d:"Trust lost faster than it can be rebuilt."}
+];
+const CADENCE = {"Weekly":52,"Every two weeks":26,"Monthly":12};
+
+const STEPS = [
+  { id:"shift", num:"00", icon:"brain", gold:true, kicker:"Your turn · Start here",
+    title:'I can’t <span class="y">→ I can.</span>',
+    lede:"AI moves the line on what each of us can do. Start with the one thing you've been telling yourself you can't do, then rewrite it as something you can.",
+    fields:[ {type:"cantcan", quick:true} ],
+    tip:"<b>Mindsets matter more than models.</b> Keep it concrete. “I can’t code” becomes “I can build the tool I need.”",
+    source:"Newest support agents gained 34% in productivity with AI (Brynjolfsson, Li and Raymond, Quarterly Journal of Economics, 2025); consultants produced 40% higher-quality work on tasks AI handles well (Dell’Acqua and colleagues, 2023)."
+  },
+  { id:"milestone", num:"01", icon:"flag", kicker:"Step 01",
+    title:'Pick your <span class="g">milestone.</span>',
+    lede:"A milestone is a powerful filter. Make it specific, dated, and easy to check, something you could show someone in the next 90 days.",
+    fields:[
+      {key:"milestone", type:"area", quick:true, label:"In the next 90 days, I will ship…", ph:"A working agent that drafts my weekly investor update, shown to three people who'd actually use it."},
+      {key:"date", type:"date", quick:true, label:"By when?", def:()=>addDays(90)},
+      {key:"proof", type:"text", quick:true, label:"How would a stranger check that you did it?", ph:"A link, a demo, a number, a signed offer."},
+      {key:"filter", type:"area", label:"What does this milestone let you ignore?", hint:"A good milestone tells you which things to build and which to skip.", ph:"Three side projects, the conference circuit, and refreshing LinkedIn."}
+    ],
+    tip:"<b>The pilots’ 1-in-60 rule:</b> one degree off puts you a mile off for every 60 flown. New York to Seattle, uncorrected, lands you about 42 miles away. Small tweaks as you run the loop keep you on course."
+  },
+  { id:"bugs", num:"02", icon:"bug", kicker:"Step 02",
+    title:'Know your <span class="g">bugs.</span>',
+    lede:"When a loop fails, trace the data on what happened. Most of us run some version of these four. Check the ones you recognize in yourself.",
+    fields:[
+      {key:"bugs", type:"checks", options:BUGS, label:"Bugs in my operating system"},
+      {key:"ownbugs", type:"area", label:"Any bugs of your own?", ph:"Imposter syndrome. False constraints, like “I’d need a PhD for that.”"},
+      {key:"bugstory", type:"area", label:"The last time one of these cost you something, what happened?", hint:"Facts only. What you did, what you expected, what actually happened."},
+      {key:"rule", type:"text", label:"One rule to design around your worst bug", ph:"Before I quit anything, I write what I'd decide if I were starting fresh today."}
+    ],
+    source:"Kahneman and Tversky (1979); Arkes and Blumer (1985); René Girard, Deceit, Desire and the Novel (1961); Gilovich, Medvec and Savitsky, JPSP (2000)."
+  },
+  { id:"pain", num:"03", icon:"pen", gold:true, kicker:"Step 03 · The big one",
+    title:'Log the <span class="y">pain.</span>',
+    lede:"Every mistake is just data. Keep a failure journal on paper. Your Moleskine never touches the cloud, and you decide which pages, if any, your AI ever sees.",
+    fields:[
+      {type:"template"},
+      {key:"folder", type:"text", label:"Where will photos of the pages you choose to share go?", hint:"One folder. Your monthly review agent reads it on the 1st.", ph:"A Google Drive folder called Failure Journal"},
+      {key:"when", type:"text", label:"When will you write?", ph:"Friday at 4pm, before I close the laptop."}
+    ],
+    source:"Fischhoff, Journal of Experimental Psychology (1975); Feynman, Caltech commencement address (1974)."
+  },
+  { id:"coach", num:"04", icon:"coach", kicker:"Step 04",
+    title:'Build your <span class="g">coach.</span>',
+    lede:"Once you know your bugs, build a coach that appeals to your better angels. Blend three to five people into one honest voice. Make at least one of them someone you actually know.",
+    fields:[
+      {key:"heroes", type:"heroes", label:"Who's in your coach, and what does each one bring?"},
+      {key:"never", type:"text", label:"What should your coach never let you get away with?", ph:"Planning instead of shipping."},
+      {key:"tone", type:"select", label:"How should it talk to you?", options:["Blunt. Skip the cushioning.","Direct, with warmth.","Gentle first, then honest."]}
+    ],
+    tip:"<b>Why a coach prompt?</b> Language models tend to tell people what they want to hear (Sharma and colleagues, 2023). Yours gets explicit instructions to quote your words back and push on your bugs.",
+    source:"Wooden and Jamison, Wooden (1997); Sharma and colleagues, Towards Understanding Sycophancy in Language Models (2023)."
+  },
+  { id:"people", num:"05", icon:"people", kicker:"Step 05 · Invest in people",
+    title:'Spend time with people who <span class="g">lift you up.</span>',
+    lede:"Off the screens and in the real world. Harvard has studied why since 1938, and the clearest finding is that close relationships, more than money or fame, keep people happier and healthier.",
+    fields:[
+      {key:"people", type:"area", label:"Three people who lift you up", ph:"One per line"},
+      {key:"ritual", type:"text", label:"One off-screen plan with one of them this month", ph:"Breakfast with Sam on the first Saturday."}
+    ],
+    source:"Waldinger and Schulz, The Good Life (2023); Waldinger, TED (2015); Holt-Lunstad, Smith and Layton, PLOS Medicine (2010)."
+  },
+  { id:"rest", num:"06", icon:"play", kicker:"Step 06",
+    title:'Rest and <span class="g">play.</span>',
+    lede:"Protect the time agents give back. Feynman burned out after the Manhattan Project, played with the math of a wobbling cafeteria plate just for fun, and later traced his Nobel work back to it.",
+    fields:[
+      {key:"play", type:"area", label:"What feels like play to you and looks like work to everyone else?", hint:"Three signals: you lose track of time, you can't stop thinking about it, and you reach for it first when nothing else is due. That's your edge."},
+      {key:"protect", type:"text", label:"What time will you protect, and how?", ph:"No laptop after 9pm. Saturday mornings are for the trail."},
+      {key:"fun", type:"text", label:"One thing you'll do purely for fun this month", ph:"Learn three songs on guitar."}
+    ],
+    source:"Feynman, Surely You’re Joking, Mr. Feynman! (1985); Sio and Ormerod, Psychological Bulletin (2009); Csikszentmihalyi, Flow (1990); O’Keefe, Dweck and Walton, Psychological Science (2018)."
+  },
+  { id:"ship", num:"07", icon:"rocket", kicker:"Step 07",
+    title:'Ship <span class="g">a lot.</span>',
+    lede:"The hit rate stays about the same, so more shots mean more hits. At a 10% hit rate, ten shipments get you about one hit and a hundred get you about ten. Take many shots and ignore the stands.",
+    fields:[
+      {key:"cadence", type:"select", label:"How often will you ship something?", options:Object.keys(CADENCE)},
+      {key:"first", type:"area", label:"The first thing you'll ship", ph:"A one-page demo of my agent, with a 60-second screen recording."},
+      {key:"firstdate", type:"date", label:"Ship date", def:()=>addDays(14)},
+      {key:"where", type:"text", label:"Where will someone see it?", ph:"Posted on LinkedIn and sent to two classmates for feedback."}
+    ],
+    tip:"<b>“The chains of habit are generally too small to be felt till they are too strong to be broken.”</b> Samuel Johnson",
+    source:"Simonton, Psychological Review (1997); Samuel Johnson, The Vision of Theodore (1748)."
+  },
+  { id:"compound", num:"08", icon:"trend", gold:true, kicker:"Step 08 · Let it compound",
+    title:'Protect <span class="y">n.</span>',
+    lede:"In (1 + r)ⁿ, r is where we compare, and despair. n is where the real gains are, and the part we control by staying in the game. Burnout, a ruinous bet, toxic or boring work, or a fried reputation sends n back to zero.",
+    fields:[
+      {type:"compound"},
+      {key:"guards", type:"checks", options:GUARDS, label:"Which of these could send your n back to zero?"},
+      {key:"warning", type:"text", label:"Your early warning sign", ph:"I stop working out and start sleeping five hours."},
+      {key:"critic", type:"text", label:"What does your inner critic say? Give it a funny voice.", hint:"The flat part of the curve is where most people quit and where the critics are loudest.", ph:"“This will never work,” in a cartoon villain voice."}
+    ],
+    source:"Illustrative arithmetic: 1.01¹²⁰ ≈ 3.30, 1.01³⁶⁰ ≈ 35.9, 1.01⁹⁶ ≈ 2.60. Critics: Theodore Roosevelt, the Sorbonne (1910)."
+  }
+];
+
+/* ---------- prompt builders ---------- */
+function heroesList(){ return (S.a.heroes||[]).filter(h=>h && (h.n||"").trim()); }
+function lines(arr){ return arr.filter(Boolean).join("\n"); }
+function bugsAll(){
+  const out = (S.a.bugs||[]).slice();
+  if(has("ownbugs")) out.push(val("ownbugs").trim());
+  return out;
+}
+function coachPrompt(){
+  const H = heroesList();
+  const blend = H.length ? H.map(h=>`- ${h.n.trim()}${h.t&&h.t.trim()?": "+h.t.trim():""}`).join("\n") : "- (I haven't named my heroes yet. Ask me for three to five, including one person I actually know.)";
+  const ctx = lines([
+    has("cant")||has("can") ? `- My shift: I used to say "I can't ${val("cant").trim()}." Now: "I can ${val("can").trim()}."` : "",
+    has("milestone") ? `- My milestone: ${val("milestone").trim()}${has("date")?` (due ${fmtDate(val("date"))})`:""}` : "",
+    has("proof") ? `- How anyone could check it: ${val("proof").trim()}` : "",
+    has("filter") ? `- What this milestone lets me ignore: ${val("filter").trim()}` : "",
+    bugsAll().length ? `- My known bugs: ${bugsAll().join("; ")}` : "",
+    has("bugstory") ? `- A time a bug cost me: ${val("bugstory").trim()}` : "",
+    has("rule") ? `- My rule for my worst bug: ${val("rule").trim()}` : "",
+    has("people") ? `- People who lift me up: ${val("people").trim().split(/\n+/).join(", ")}` : "",
+    has("play") ? `- What feels like play to me: ${val("play").trim()}` : "",
+    has("protect") ? `- Time I protect: ${val("protect").trim()}` : "",
+    has("cadence") ? `- My shipping cadence: ${val("cadence")}` : "",
+    has("first") ? `- Next thing I'm shipping: ${val("first").trim()}${has("firstdate")?` (by ${fmtDate(val("firstdate"))})`:""}` : "",
+    (S.a.guards||[]).length ? `- What could send my n back to zero: ${(S.a.guards||[]).join(", ")}` : "",
+    has("warning") ? `- My early warning sign: ${val("warning").trim()}` : "",
+    has("critic") ? `- My inner critic says: ${val("critic").trim()}` : ""
+  ]);
+  return `You are my personal coach. You are one honest voice blended from these people:
+${blend}
+
+Speak the way they would if they were in the room together. Draw on each one's strength when it fits the moment.
+
+ABOUT ME
+${ctx || "- (Ask me for my 90-day milestone and my known bugs before anything else.)"}
+
+HOW TO COACH ME
+1. Honest over kind. Do not flatter me. If my reasoning is weak, say so and say why.
+2. When I bring you a decision, name which of my bugs might be driving it, and quote my own words back to me.
+3. Pull every conversation back to my milestone. If something doesn't move it, tell me to ignore it.
+4. Treat my misses as data, never shame. Run the loop with me: What did I try? What did I expect? How does the result compare? What will I adjust?
+5. Push me to ship something small and soon instead of planning more.
+6. Protect my n. If I sound burned out, isolated, or about to make a ruinous bet, raise it before anything else.
+7. Ask me questions one at a time.${has("never")?`\n8. Never let me get away with: ${val("never").trim()}`:""}
+
+Tone: ${val("tone")||"Direct, with warmth."}
+Start by asking me what I shipped since we last talked.`;
+}
+function monthlyPrompt(){
+  const H = heroesList();
+  const when = has("date") ? ` (due ${fmtDate(val("date"))})` : "";
+  return `Read this month's failure journal pages${has("folder")?` in ${val("folder").trim()}`:" in my journal folder"}. List every bug that showed up more than once as a pattern, the rules I broke, and one new rule to add. Ask me questions one by one. Quote my own words back to me, and be blunt.
+
+Then check me against my plan:
+- Known bugs to look for: ${bugsAll().length?bugsAll().join("; "):"(ask me)"}
+- Rules I've set: ${has("rule")?val("rule").trim():"(none yet, help me write the first one)"}
+- Milestone: ${has("milestone")?val("milestone").trim()+when:"(ask me)"}
+- Shipping cadence: ${val("cadence")||"(ask me)"}. Count what I actually shipped this month against it.
+- Protect n: ${has("warning")?`check for my early warning sign ("${val("warning").trim()}")`:"check whether I'm burning out"}${(S.a.guards||[]).length?`, and for ${(S.a.guards||[]).join(", ").toLowerCase()}`:""}.
+- People: did I spend real, off-screen time with ${has("people")?val("people").trim().split(/\n+/).join(", "):"the people who lift me up"}?
+
+${H.length?`Speak as my coach, a blend of ${H.map(h=>h.n.trim()).join(", ")}.`:"Speak as a blunt, caring coach."} End with the one adjustment I should make next month.`;
+}
+function loopForCoach(L){
+  return lines([
+    `Here's a loop I just ran. Coach me on it.`,
+    ``,
+    `TRY: ${L.try||""}`,
+    `EXPECT: ${L.expect||""}${L.conf?` (I was ${L.conf} confident)`:""}`,
+    L.compare?`COMPARE (what actually happened): ${L.compare}`:`COMPARE: not yet, I'm about to run it. Pressure-test my expectation first.`,
+    L.adjust?`ADJUST (what I'll change): ${L.adjust}`:"",
+    ``,
+    `Which of my bugs showed up? Is my adjustment the right size? Ask me one question at a time.`
+  ]);
+}
+
+/* ---------- views ---------- */
+let view = "home";
+function setView(v){ view=v; render(); window.scrollTo({top:0,behavior:"instant"}); }
+document.getElementById("homeBtn").onclick = ()=>setView("home");
+document.querySelectorAll(".tab").forEach(t=> t.onclick = ()=>{ if(t.dataset.view==="setup"){ S.mode="full"; save(); } setView(t.dataset.view); });
+
+function render(){
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-current", String(t.dataset.view===view || (view==="step"&&t.dataset.view==="setup"))));
+  ({home:renderHome, setup:renderSetup, step:renderStep, quickdone:renderQuickDone, kit:renderKit, loops:renderLoops})[view]();
+}
+
+function curveSVG(){
+  let d="M0,118"; for(let i=0;i<=100;i++){ const x=i*6; const y=118-Math.pow(1.045,i)*1.2+1.2; d+=` L${x},${Math.max(4,y).toFixed(1)}`; }
+  return `<svg class="curve" viewBox="0 0 600 124" aria-hidden="true"><defs><linearGradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3DD68C" stop-opacity=".18"/><stop offset="1" stop-color="#3DD68C" stop-opacity="0"/></linearGradient></defs><path d="${d} L600,120 L0,120Z" fill="url(#cg)"/><path d="${d}" fill="none" stroke="#3DD68C" stroke-width="3" stroke-linecap="round" style="filter:drop-shadow(0 0 6px rgba(61,214,140,.6))"/><line x1="0" y1="120" x2="600" y2="120" stroke="#333"/></svg>`;
+}
+
+function renderHome(){
+  const progress = STEPS.filter((s,i)=>i>0 && s.fields.some(f=>f.key&&has(f.key))).length;
+  const resume = S.started ? `<button class="path gold wide" data-act="resume"><div class="t">Pick up where you left off</div><div class="d">${progress} of 8 steps have answers. Saved on this device.</div></button>` : "";
+  $app.innerHTML = `
+    <p class="kicker">Life in the agentic age</p>
+    <h1>Run the <span class="g">loop.</span></h1>
+    <div class="eq">(1 + r)<sup>n</sup></div>
+    <p class="lede">Everything that learns runs the same loop: try, expect, compare, adjust. This walks you through applying it to yourself, one prompt at a time. At the end you'll have a personal AI coach and a monthly review agent built from your own answers.</p>
+    <div class="paths">
+      ${resume}
+      <button class="path" data-act="quick"><div class="t">In class: 5 minutes</div><div class="d">Your “I can’t → I can” line and a dated 90-day milestone. Finish the rest tonight.</div></button>
+      <button class="path" data-act="full"><div class="t">Full setup: about 25 minutes</div><div class="d">All eight steps, then your coach prompt and monthly review agent.</div></button>
+      <button class="path gold wide" data-act="loops"><div class="t">Run a loop</div><div class="d">Before you ship, write what you expect. After, compare and adjust. Every closed loop adds one to n.</div></button>
+    </div>
+    ${curveSVG()}
+    <div class="note">Everything you type stays in this browser. Nothing is sent to a server, and there's no account. To move to another device, use the transfer link on the “Your agent” page.</div>
+  `;
+  $app.querySelector('[data-act="quick"]').onclick = ()=>{ S.mode="quick"; S.started=true; S.step=0; save(); setView("step"); };
+  $app.querySelector('[data-act="full"]').onclick = ()=>{ S.mode="full"; S.started=true; S.step=0; save(); setView("step"); };
+  $app.querySelector('[data-act="loops"]').onclick = ()=>setView("loops");
+  const r=$app.querySelector('[data-act="resume"]'); if(r) r.onclick = ()=>{ S.mode="full"; save(); setView("step"); };
+}
+
+function renderSetup(){ S.mode="full"; S.started=true; save(); renderStep(); view="step"; }
+
+function stepList(){ return S.mode==="quick" ? STEPS.filter(s=>s.fields.some(f=>f.quick)) : STEPS; }
+
+function fieldHTML(f){
+  if(f.type==="cantcan"){
+    return `<div class="field"><div class="cantcan">
+      <label class="from"><span>I can’t</span><input type="text" data-k="cant" value="${esc(val("cant"))}" placeholder="code" aria-label="I can't"></label>
+      <div class="arrow" aria-hidden="true">→</div>
+      <label class="to"><span>I can</span><input type="text" data-k="can" value="${esc(val("can"))}" placeholder="build the tool I need" aria-label="I can"></label>
+    </div></div>`;
+  }
+  if(f.type==="template"){
+    const rows=[["What hurt","in specific terms, honestly"],["What led me here","the choices and the context"],["The people","who was involved, and how I showed up"],["The process","what broke, or what was missing"],["Which bug showed up","from step 2"]];
+    return `<p class="small muted" style="margin:0 0 8px">Copy these six headings onto a journal page. Fill one out whenever something stings.</p><div class="template">${rows.map(r=>`<div class="trow"><b>${r[0]}</b><span>${r[1]}</span></div>`).join("")}<div class="trow hl"><b>What I learned</b><span>in detailed and objective terms, so an agent can read it</span></div></div>`;
+  }
+  if(f.type==="compound") return compoundChart();
+  const id="f_"+f.key;
+  const lab=`<label class="l" for="${id}">${esc(f.label)}</label>${f.hint?`<p class="hint">${esc(f.hint)}</p>`:""}`;
+  if(f.type==="text") return `<div class="field">${lab}<input type="text" id="${id}" data-k="${f.key}" value="${esc(val(f.key))}" placeholder="${esc(f.ph||"")}"></div>`;
+  if(f.type==="area") return `<div class="field">${lab}<textarea id="${id}" data-k="${f.key}" placeholder="${esc(f.ph||"")}">${esc(val(f.key))}</textarea></div>`;
+  if(f.type==="date"){ if(!has(f.key) && f.def){ S.a[f.key]=f.def(); save(); } return `<div class="field">${lab}<input type="date" id="${id}" data-k="${f.key}" value="${esc(val(f.key))}"></div>`; }
+  if(f.type==="select"){ if(!has(f.key)){ S.a[f.key]=f.options[f.key==="cadence"?2:1]||f.options[0]; save(); } return `<div class="field">${lab}<select id="${id}" data-k="${f.key}">${f.options.map(o=>`<option${o===val(f.key)?" selected":""}>${esc(o)}</option>`).join("")}</select></div>`; }
+  if(f.type==="checks"){
+    const sel=S.a[f.key]||[];
+    return `<div class="field"><span class="l" style="display:block;font-weight:600;margin-bottom:8px">${esc(f.label)}</span><div class="checks">${f.options.map(o=>`<label class="check"><input type="checkbox" data-ck="${f.key}" value="${esc(o.v)}"${sel.includes(o.v)?" checked":""}><div><div class="ct">${esc(o.v)}</div><div class="cd">${esc(o.d)}</div></div></label>`).join("")}</div></div>`;
+  }
+  if(f.type==="heroes"){
+    const H=(S.a.heroes||[]).slice(); while(H.length<5) H.push({n:"",t:""});
+    const ex=[["John Wooden","details"],["Toni Morrison","courage"],["Rick Rubin","openness"],["Charlie Munger","rigor"],["My grandma","optimism and generosity"]];
+    return `<div class="field">${lab}<p class="hint">Type your own. The faded examples show the format.</p><div class="heroes">${H.slice(0,5).map((h,i)=>`<div class="hero"><input type="text" data-h="${i}" data-hf="n" value="${esc(h.n)}" placeholder="${ex[i][0]}" aria-label="Person ${i+1}"><input type="text" data-h="${i}" data-hf="t" value="${esc(h.t)}" placeholder="${ex[i][1]}" aria-label="What person ${i+1} brings"></div>`).join("")}</div></div>`;
+  }
+  return "";
+}
+
+function compoundChart(){
+  const W=600,H=240,P=30, yr=30, maxY=40;
+  const X=y=>P+(y/yr)*(W-P-10), Y=v=>H-P-(v/maxY)*(H-P*2);
+  const path=(f)=>{ let d=""; for(let y=0;y<=yr;y+=.25){ d+=(d?" L":"M")+X(y).toFixed(1)+","+Y(Math.min(maxY,f(y))).toFixed(1);} return d; };
+  const monthly=y=>Math.pow(1.01,12*y), quarterly=y=>Math.pow(1.01,4*y), quit=y=>Math.pow(1.01,12*Math.min(y,8));
+  let grid=""; for(let v=0;v<=40;v+=10){ grid+=`<line x1="${P}" x2="${W-10}" y1="${Y(v)}" y2="${Y(v)}" stroke="#2a2a2a"/><text x="${P-6}" y="${Y(v)+4}" fill="#666" font-size="11" text-anchor="end">${v}×</text>`; }
+  for(let y=0;y<=30;y+=10){ grid+=`<text x="${X(y)}" y="${H-10}" fill="#666" font-size="11" text-anchor="middle">${y}y</text>`; }
+  const per = CADENCE[val("cadence")]||12;
+  return `<div class="chart">
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Two people, same talent, 1% better each loop. Shipping monthly for 30 years reaches about 36 times; quarterly reaches about 3.3 times; monthly but quitting at year 8 stalls at about 2.6 times.">
+      ${grid}
+      <rect x="${X(0)}" y="${Y(40)}" width="${X(8)-X(0)}" height="${Y(0)-Y(40)}" fill="#FFC64D" fill-opacity=".08" stroke="#FFC64D" stroke-opacity=".5"/>
+      <text x="${X(0)+8}" y="${Y(40)+18}" fill="#FFC64D" font-size="12" font-weight="700">Where most people quit</text>
+      <path d="${path(quarterly)}" fill="none" stroke="#bdbdbd" stroke-width="2.5"/>
+      <path d="${path(quit)}" fill="none" stroke="#F26B6B" stroke-width="2.5"/>
+      <path d="${path(monthly)}" fill="none" stroke="#3DD68C" stroke-width="3"/>
+    </svg>
+    <div class="legend">
+      <div><b class="g">36×</b>ships monthly for 30 years</div>
+      <div><b style="color:#bdbdbd">3.3×</b>ships quarterly for 30 years</div>
+      <div><b class="r">2.6×</b>ships monthly, quits at year 8</div>
+    </div>
+    <p class="small" style="margin:12px 0 0">Two people, same talent, 1% better each loop. Your cadence (${esc(val("cadence")||"Monthly").toLowerCase()}) gives you <b class="y">${per} loops a year</b>, so ten years in the game is n = ${per*10}.</p>
+  </div>`;
+}
+
+function renderStep(){
+  const list = stepList();
+  if(S.step>=list.length) S.step=list.length-1;
+  if(S.step<0) S.step=0;
+  const s = list[S.step], quick = S.mode==="quick";
+  const fields = s.fields.filter(f=>!quick || f.quick);
+  const isLast = S.step===list.length-1;
+  const prog = list.map((st,i)=>{
+    const done = st.fields.some(f=>f.key&&has(f.key)) || (st.id==="shift"&&(has("cant")||has("can")));
+    return `${i?'<span class="pbar"></span>':""}<button class="pdot${i===S.step?" on":""}${done&&i!==S.step?" done":""}${st.gold?" goldd":""}" data-go="${i}" aria-label="Step ${st.num}">${I[st.icon]}</button>`;
+  }).join("");
+  $app.innerHTML = `
+    <div class="progress">${prog}</div>
+    <p class="kicker${s.gold?" gold":""}">${esc(s.kicker)}${quick?" · In-class version":""}</p>
+    <div class="stephead"><div class="badge${s.gold?" goldb":""}">${I[s.icon]}</div><h2>${s.title}</h2></div>
+    <p class="lede">${esc(s.lede)}</p>
+    ${fields.map(fieldHTML).join("")}
+    ${!quick && s.tip ? `<div class="tip">${s.tip}</div>`:""}
+    <div class="nav">
+      ${S.step>0?`<button class="btn ghost back" data-nav="-1" aria-label="Back">←</button>`:`<button class="btn ghost back" data-nav="home" aria-label="Home">←</button>`}
+      <button class="btn ${isLast?"gold":"primary"}" data-nav="1">${isLast?(quick?"Save my milestone":"Build my agent →"):"Next →"}</button>
+    </div>
+    ${!quick && s.source?`<div class="source">Sources: ${esc(s.source)}</div>`:""}
+  `;
+  bindInputs();
+  $app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{ S.step=+b.dataset.go; save(); renderStep(); window.scrollTo({top:0}); });
+  $app.querySelectorAll("[data-nav]").forEach(b=>b.onclick=()=>{
+    const n=b.dataset.nav;
+    if(n==="home") return setView("home");
+    if(n==="1" && isLast){ return setView(quick?"quickdone":"kit"); }
+    S.step+= +n; save(); renderStep(); window.scrollTo({top:0});
+  });
+}
+
+function bindInputs(root){
+  root=root||$app;
+  root.querySelectorAll("[data-k]").forEach(el=>{
+    const ev = el.tagName==="SELECT"||el.type==="date" ? "change" : "input";
+    el.addEventListener(ev, ()=>{ S.a[el.dataset.k]=el.value; save(); if(el.dataset.k==="cadence"){ const c=$app.querySelector(".chart"); if(c) c.outerHTML=compoundChart(); } });
+  });
+  root.querySelectorAll("[data-ck]").forEach(el=>{
+    el.addEventListener("change", ()=>{ const k=el.dataset.ck; const set=new Set(S.a[k]||[]); el.checked?set.add(el.value):set.delete(el.value); S.a[k]=[...set]; save(); });
+  });
+  root.querySelectorAll("[data-h]").forEach(el=>{
+    el.addEventListener("input", ()=>{ const H=(S.a.heroes||[]).slice(); while(H.length<5) H.push({n:"",t:""}); H[+el.dataset.h]=Object.assign({},H[+el.dataset.h],{[el.dataset.hf]:el.value}); S.a.heroes=H; save(); });
+  });
+}
+
+function transferLink(){ return location.origin+location.pathname+"#r="+b64e({a:S.a,loops:S.loops}); }
+
+function renderQuickDone(){
+  const link = transferLink();
+  const body = encodeURIComponent(`My milestone: ${val("milestone")}\nBy: ${fmtDate(val("date"))}\nI can't ${val("cant")} → I can ${val("can")}\n\nFinish setting up tonight (this link carries my answers):\n${link}`);
+  $app.innerHTML = `
+    <p class="kicker gold">You're on the board</p>
+    <h2>Now it has <span class="y">a date.</span></h2>
+    <div class="card gold">
+      <p class="muted small" style="margin:0 0 4px">FROM</p>
+      <p style="margin:0 0 12px;font-size:20px;color:#9a9a9a">I can’t ${esc(val("cant")||"______")}</p>
+      <p class="y small" style="margin:0 0 4px;font-weight:700">TO</p>
+      <p style="margin:0 0 16px;font-size:22px" class="y"><b>I can ${esc(val("can")||"______")}</b></p>
+      <p style="margin:0 0 4px" class="small muted">MILESTONE${has("date")?` · ${esc(fmtDate(val("date")))}`:""}</p>
+      <p style="margin:0;font-size:18px">${esc(val("milestone")||"Not written yet")}</p>
+    </div>
+    <p class="lede">It's saved on this device. Tonight, finish the other seven steps and build your coach. If you'll do that on a laptop, send yourself the link below. Your answers ride inside the link itself, so nothing touches a server.</p>
+    <div class="row">
+      <a class="btn primary" href="mailto:?subject=${encodeURIComponent("My 90-day milestone")}&body=${body}">Email it to myself</a>
+      <button class="btn ghost" data-act="copylink">Copy transfer link</button>
+      <button class="btn line" data-act="cont">Keep going now →</button>
+    </div>
+  `;
+  $app.querySelector('[data-act="copylink"]').onclick=()=>copy(link);
+  $app.querySelector('[data-act="cont"]').onclick=()=>{ S.mode="full"; S.step=1; save(); setView("step"); };
+}
+
+function renderKit(){
+  const cp=coachPrompt(), mp=monthlyPrompt();
+  const missing = ["milestone","bugs","heroes"].filter(k=>k==="heroes"?!heroesList().length:!has(k));
+  const warn = missing.length ? `<div class="tip"><b>Heads up:</b> your agent gets sharper with ${missing.map(m=>({milestone:"a milestone",bugs:"your bugs",heroes:"your coach's heroes"})[m]).join(", ")}. <a href="#" data-act="fill">Fill those in</a>, or use it as is and the prompt will ask you.</div>` : "";
+  const q = s => encodeURIComponent(s);
+  $app.innerHTML = `
+    <p class="kicker">Your agent</p>
+    <h2>Automate <span class="y">the loop.</span></h2>
+    <p class="lede">Two prompts built from your answers. Your coach handles the day to day. Your monthly review runs on the 1st and reads only the journal pages you choose to share.</p>
+    ${warn}
+    <div class="card green">
+      <h3>1. Your coach</h3>
+      <p class="small muted" style="margin:0">Paste this into the instructions of a Claude Project or a ChatGPT Project (or custom GPT). Every chat in that project then starts with your coach.</p>
+      <pre class="prompt" id="cp">${esc(cp)}</pre>
+      <div class="row">
+        <button class="btn primary sm" data-copy="cp">Copy coach prompt</button>
+        <a class="btn ghost sm" target="_blank" rel="noopener" href="https://claude.ai/new?q=${q(cp)}">Try it in Claude</a>
+        <a class="btn ghost sm" target="_blank" rel="noopener" href="https://chatgpt.com/?q=${q(cp)}">Try it in ChatGPT</a>
+      </div>
+    </div>
+    <div class="card gold">
+      <h3>2. Your monthly review</h3>
+      <div class="steps3">
+        <div class="s3"><span class="n">01</span><div><b>One folder</b><span>Photograph the journal pages you're willing to share and drop them in ${has("folder")?esc(val("folder")):"the same folder"}.</span></div></div>
+        <div class="s3"><span class="n">02</span><div><b>One scheduled task</b><span>In Claude or ChatGPT, create a task that runs on the first of every month. Give it access to the folder, or upload that month's photos.</span></div></div>
+        <div class="s3"><span class="n">03</span><div><b>One prompt</b><span>Point it at the folder and paste the prompt below.</span></div></div>
+      </div>
+      <pre class="prompt" id="mp">${esc(mp)}</pre>
+      <div class="row">
+        <button class="btn gold sm" data-copy="mp">Copy monthly prompt</button>
+        <a class="btn ghost sm" target="_blank" rel="noopener" href="https://claude.ai/new?q=${q(mp)}">Open in Claude</a>
+        <a class="btn ghost sm" target="_blank" rel="noopener" href="https://chatgpt.com/?q=${q(mp)}">Open in ChatGPT</a>
+      </div>
+    </div>
+    <div class="note">Now go run a loop. Before you ship anything, write down what you expect. <a href="#" data-act="loops">Start your first loop →</a></div>
+    <div class="card">
+      <h3>Your data</h3>
+      <p class="small muted" style="margin:0 0 12px">It lives only in this browser. Clearing your browser data erases it, so keep a backup or a transfer link.</p>
+      <div class="row">
+        <button class="btn ghost sm" data-act="link">Copy transfer link</button>
+        <button class="btn ghost sm" data-act="dl">Download backup</button>
+        <label class="btn ghost sm" style="cursor:pointer">Restore backup<input type="file" accept="application/json,.json" data-act="ul" hidden></label>
+        <button class="btn line sm" data-act="wipe">Erase everything</button>
+      </div>
+    </div>
+  `;
+  $app.querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copy(b.dataset.copy==="cp"?cp:mp));
+  const fill=$app.querySelector('[data-act="fill"]'); if(fill) fill.onclick=e=>{e.preventDefault(); const list=STEPS; const idx=list.findIndex(s=>s.fields.some(f=>missing.includes(f.key))); S.mode="full"; S.step=Math.max(0,idx); save(); setView("step"); };
+  $app.querySelector('.note [data-act="loops"]').onclick=e=>{e.preventDefault(); setView("loops");};
+  $app.querySelector('[data-act="link"]').onclick=()=>copy(transferLink());
+  $app.querySelector('[data-act="dl"]').onclick=()=>{
+    const blob=new Blob([JSON.stringify({a:S.a,loops:S.loops},null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="run-the-loop-backup.json"; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);
+  };
+  $app.querySelector('[data-act="ul"]').onchange=e=>{
+    const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+    r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d.a) throw 0; S.a=d.a; S.loops=d.loops||[]; S.started=true; save(); toast("Restored"); renderKit(); }catch(_){ toast("That file didn't look right"); } };
+    r.readAsText(f);
+  };
+  confirmTap($app.querySelector('[data-act="wipe"]'), "Tap again to erase everything", ()=>{ S=blank(); save(); setView("home"); toast("Erased"); });
+}
+
+function renderLoops(){
+  const closed = S.loops.filter(l=>l.closed).length;
+  const open = S.loops.filter(l=>!l.closed);
+  const done = S.loops.filter(l=>l.closed).slice().reverse();
+  $app.innerHTML = `
+    <p class="kicker">Machine learning, and us</p>
+    <h2>Every loop adds <span class="y">one to n.</span></h2>
+    <div class="loopgrid" aria-label="The loop">
+      <div class="lq"><div class="n">01</div><div class="w">Try</div></div>
+      <div class="lq"><div class="n">02</div><div class="w">Expect</div></div>
+      <div class="lq"><div class="n">04</div><div class="w">Adjust</div></div>
+      <div class="lq hl"><div class="n">03</div><div class="w"><b>Compare</b></div></div>
+    </div>
+    <div class="ncount"><span class="big">n = ${closed}</span><span class="muted small">loops closed${has("cadence")?` · your cadence: ${esc(val("cadence").toLowerCase())}`:""}</span></div>
+
+    <div class="card green">
+      <h3>Start a loop</h3>
+      <p class="small muted" style="margin:0 0 14px">Write your expectation before you ship. That's what makes the comparison honest (and it's the part most people skip).</p>
+      <div class="field"><label class="l" for="ltry">Try: what are you shipping?</label><input type="text" id="ltry" placeholder="${esc(val("first")?val("first").split("\n")[0]:"A 60-second demo of my agent, posted to LinkedIn")}"></div>
+      <div class="field"><label class="l" for="lexp">Expect: what do you think will happen?</label><p class="hint">Make it checkable. A number, a reply, a yes or no.</p><textarea id="lexp" placeholder="At least 3 people ask to try it within a week."></textarea></div>
+      <div class="field"><label class="l" for="lconf">How confident are you?</label><select id="lconf"><option>50%</option><option>60%</option><option selected>70%</option><option>80%</option><option>90%</option></select></div>
+      <button class="btn primary" id="lstart">Start loop</button>
+    </div>
+
+    ${open.length?`<p class="kicker gold" style="margin-top:28px">Open loops · time to compare</p>`:""}
+    ${open.map(L=>`
+      <div class="loop open" data-id="${L.id}">
+        <div class="lab">Try · ${esc(fmtDate(L.date))}</div><div>${esc(L.try)}</div>
+        <div class="lab">Expect · ${esc(L.conf)}</div><div>${esc(L.expect)}</div>
+        <div class="field" style="margin-top:14px"><label class="l">Compare: what actually happened?</label><textarea data-lf="compare" placeholder="2 people asked. One said the demo was too long.">${esc(L.compare||"")}</textarea></div>
+        <div class="field"><label class="l">Adjust: what's the one thing you'll change?</label><input type="text" data-lf="adjust" value="${esc(L.adjust||"")}" placeholder="Cut the demo to 30 seconds and lead with the output."></div>
+        <div class="row"><button class="btn gold sm" data-close>Close the loop (n + 1)</button><button class="btn ghost sm" data-coach>Copy for my coach</button><button class="btn line sm" data-del>Delete</button></div>
+      </div>`).join("")}
+
+    ${done.length?`<p class="kicker" style="margin-top:28px">Closed loops</p>`:""}
+    ${done.map(L=>`
+      <div class="loop closed" data-id="${L.id}">
+        <div class="lab">Try · ${esc(fmtDate(L.date))}</div><div>${esc(L.try)}</div>
+        <div class="lab">Expect · ${esc(L.conf)}</div><div>${esc(L.expect)}</div>
+        <div class="lab">Compare</div><div>${esc(L.compare)}</div>
+        <div class="lab">Adjust</div><div>${esc(L.adjust)}</div>
+        <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-coach>Copy for my coach</button><button class="btn line sm" data-del>Delete</button></div>
+      </div>`).join("")}
+    <div class="source">The flat part of the curve is where most people quit. Lily pads that double daily cover only 6% of the pond on day 44 and all of it on day 48.</div>
+  `;
+  $app.querySelector("#lstart").onclick=()=>{
+    const t=$app.querySelector("#ltry").value.trim(), e=$app.querySelector("#lexp").value.trim();
+    if(!t||!e){ toast("Write what you'll try and what you expect"); return; }
+    S.loops.push({id:Date.now().toString(36), date:new Date().toISOString().slice(0,10), try:t, expect:e, conf:$app.querySelector("#lconf").value, closed:false});
+    S.started=true; save(); renderLoops(); toast("Loop started. Go ship it.");
+  };
+  $app.querySelectorAll(".loop").forEach(el=>{
+    const L=S.loops.find(l=>l.id===el.dataset.id); if(!L) return;
+    el.querySelectorAll("[data-lf]").forEach(inp=>inp.addEventListener("input",()=>{ L[inp.dataset.lf]=inp.value; save(); }));
+    const c=el.querySelector("[data-close]"); if(c) c.onclick=()=>{ if(!(L.compare||"").trim()||!(L.adjust||"").trim()){ toast("Compare and adjust first"); return; } L.closed=true; save(); renderLoops(); toast("n + 1"); };
+    el.querySelector("[data-coach]").onclick=()=>copy(loopForCoach(L));
+    confirmTap(el.querySelector("[data-del]"), "Tap again to delete", ()=>{ S.loops=S.loops.filter(x=>x!==L); save(); renderLoops(); });
+  });
+}
+
+/* ---------- import from transfer link ---------- */
+(function(){
+  const m = location.hash.match(/^#r=(.+)$/);
+  if(!m) return;
+  try{
+    const d=b64d(m[1]);
+    const hasLocal = Object.keys(S.a).length>0;
+    if(!hasLocal || confirm("Load the answers from this link? They'll replace what's saved in this browser.")){
+      S.a=d.a||{}; S.loops=d.loops||[]; S.started=true; S.mode="full"; S.step=1; save();
+      history.replaceState(null,"",location.pathname);
+      view="step";
+    } else history.replaceState(null,"",location.pathname);
+  }catch(e){ history.replaceState(null,"",location.pathname); }
+})();
+
+render();
+})();
+</script>
+</body>
+</html>
